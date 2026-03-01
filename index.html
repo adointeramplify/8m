@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>8M · Día Internacional de la Mujer</title>
+  <link rel="stylesheet" href="//s1.ppllstatics.com/starfish/1.6.11/starfish-live-blue.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --deep:    #0d001a;
+      --dark:    #1a0033;
+      --mid:     #4a0080;
+      --accent:  #9b30d0;
+      --bright:  #e040fb;
+      --light:   #f0d9ff;
+      --soft:    #c080ff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--deep);
+      color: #fff;
+      font-family: 'Guardian TextSans Regular', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Cursor ─────────────────────────────── */
+    #cur {
+      width: 22px; height: 22px;
+      border: 1.5px solid var(--bright);
+      border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      transition: transform .12s ease, border-color .3s;
+      mix-blend-mode: screen;
+    }
+    #cur-dot {
+      width: 5px; height: 5px;
+      background: var(--bright);
+      border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+    }
+
+    /* ── Canvases ────────────────────────────── */
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 0;
+    }
+    #fx-canvas {
+      position: fixed; inset: 0; z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ── Layout ──────────────────────────────── */
+    .page { position: relative; z-index: 1; }
+
+    /* ── HERO ────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: clamp(.65rem, 1.5vw, .85rem);
+      letter-spacing: .55em;
+      text-transform: uppercase;
+      color: var(--accent);
+      opacity: 0;
+      animation: fadeUp .9s .4s ease forwards;
+    }
+
+    .hero-title {
+      font-family: 'Guardian Sans Semibold', sans-serif;
+      font-weight: 600;
+      font-size: clamp(7rem, 22vw, 20rem);
+      line-height: .88;
+      background: linear-gradient(135deg, #e040fb 0%, #9b30d0 40%, #ff80ff 70%, #b44fef 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradShift 5s ease infinite, fadeUp .9s .7s ease both;
+      user-select: none;
+    }
+
+    .hero-subtitle {
+      font-family: 'IBM Plex Serif Italic', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 3.5vw, 2.2rem);
+      color: var(--light);
+      margin-top: .8rem;
+      opacity: 0;
+      animation: fadeUp .9s 1s ease forwards;
+    }
+
+    .hero-tagline {
+      font-family: 'Guardian TextSans Regular', sans-serif;
+      font-size: clamp(.85rem, 1.8vw, 1.05rem);
+      color: var(--soft);
+      margin-top: 2rem;
+      max-width: 560px;
+      line-height: 1.9;
+      opacity: 0;
+      animation: fadeUp .9s 1.3s ease forwards;
+    }
+
+    .hero-hint {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      opacity: 0;
+      animation: fadeIn 1s 2.2s ease forwards;
+    }
+    .hero-hint span {
+      font-size: .65rem; letter-spacing: .4em;
+      text-transform: uppercase; color: var(--mid);
+    }
+    .hero-hint-line {
+      width: 1px; height: 42px;
+      background: linear-gradient(to bottom, var(--mid), transparent);
+      animation: linePulse 2s ease infinite;
+    }
+
+    /* ── QUOTES ──────────────────────────────── */
+    .quotes {
+      padding: 7rem 2rem;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .section-tag {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: .7rem; letter-spacing: .5em;
+      text-transform: uppercase; color: var(--mid);
+      margin-bottom: 3.5rem;
+    }
+
+    .quote-wrap {
+      max-width: 780px; text-align: center;
+      min-height: 220px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    .quote-txt {
+      font-family: 'IBM Plex Serif Italic', serif;
+      font-style: italic;
+      font-size: clamp(1.2rem, 2.8vw, 1.9rem);
+      color: var(--light);
+      line-height: 1.65;
+      transition: opacity .4s ease, transform .4s ease;
+    }
+    .quote-txt.fade { opacity: 0; transform: translateY(12px); }
+
+    .quote-author {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      margin-top: 1.4rem;
+      font-size: .8rem; letter-spacing: .25em;
+      text-transform: uppercase; color: var(--accent);
+      transition: opacity .4s ease;
+    }
+    .quote-author.fade { opacity: 0; }
+
+    .quote-dots {
+      display: flex; gap: .6rem; margin-top: 3rem;
+    }
+    .q-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--dark); border: 1px solid var(--mid);
+      cursor: pointer; transition: all .3s;
+    }
+    .q-dot.on {
+      background: var(--bright);
+      box-shadow: 0 0 8px var(--bright);
+    }
+
+    /* ── MARQUEE ─────────────────────────────── */
+    .marquee-section {
+      padding: 5rem 0;
+      overflow: hidden;
+    }
+    .marquee-section .section-tag { text-align: center; padding: 0 2rem; }
+
+    .track {
+      display: flex; gap: 0;
+      white-space: nowrap;
+      margin-top: 2.5rem;
+      margin-bottom: 1.2rem;
+      overflow: hidden;
+    }
+    .track-inner {
+      display: flex; gap: 2.5rem;
+      flex-shrink: 0;
+      will-change: transform;
+    }
+    .track:nth-child(2) .track-inner { animation: marquee1 35s linear infinite; }
+    .track:nth-child(3) .track-inner { animation: marquee2 28s linear infinite; }
+
+    .name {
+      font-family: 'IBM Plex Serif Semibold', serif;
+      font-size: clamp(.95rem, 2.2vw, 1.4rem);
+      color: var(--soft);
+      opacity: .65;
+      transition: opacity .3s, color .3s;
+      cursor: default;
+    }
+    .name:hover { opacity: 1; color: var(--bright); }
+    .name-sep { color: var(--mid); }
+
+    /* ── CTA ─────────────────────────────────── */
+    .cta {
+      padding: 9rem 2rem 8rem;
+      text-align: center;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .cta-icon {
+      font-size: 3.5rem; color: var(--bright);
+      animation: pulse 2.5s ease infinite;
+      margin-bottom: 1.8rem;
+      line-height: 1;
+    }
+    .cta-title {
+      font-family: 'Guardian Sans Semibold', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 3.5rem);
+      color: var(--light);
+      margin-bottom: 1.2rem;
+    }
+    .cta-body {
+      font-family: 'Guardian TextSans Regular', sans-serif;
+      font-size: clamp(.85rem, 1.8vw, 1rem);
+      margin-bottom: .5rem;
+    }
+
+    .cta-link {
+      display: inline-flex; align-items: center;
+      margin-top: 2rem;
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: clamp(.8rem, 1.8vw, .95rem);
+      letter-spacing: .08em;
+      color: var(--bright);
+      border: 1px solid rgba(224, 64, 251, .4);
+      padding: .65rem 1.4rem;
+      border-radius: 30px;
+      transition: background .25s, box-shadow .25s;
+    }
+    .cta-link:hover {
+      background: rgba(224, 64, 251, .12);
+      box-shadow: 0 0 20px rgba(224, 64, 251, .25);
+    }
+
+    /* ── Footer nudge ────────────────────────── */
+    .fx-tip {
+      position: fixed; bottom: 1.2rem; right: 1.4rem;
+      font-size: .6rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--mid);
+      z-index: 10;
+      animation: fadeIn 1s 3s ease both;
+      pointer-events: none;
+    }
+
+    /* ── Keyframes ───────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes gradShift {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    @keyframes linePulse {
+      0%,100% { opacity: .25; } 50% { opacity: 1; }
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); } 50% { transform: scale(1.12); }
+    }
+    @keyframes marquee1 {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @keyframes marquee2 {
+      from { transform: translateX(-50%); }
+      to   { transform: translateX(0); }
+    }
+
+    @media (max-width: 500px) {
+      .hero-title { font-size: 7.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-dot"></div>
+
+<canvas id="bg-canvas"></canvas>
+<canvas id="fx-canvas"></canvas>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">8 de marzo · 2026</p>
+    <h1 class="hero-title">8M</h1>
+    <p class="hero-subtitle">Día Internacional de la Mujer</p>
+    <p class="hero-tagline">
+      Cada año, un recordatorio de cuánto se ha conseguido<br>
+      y de todo lo que aún está por conquistar.
+    </p>
+    <div class="hero-hint">
+      <span>Continuar</span>
+      <div class="hero-hint-line"></div>
+    </div>
+  </section>
+
+  <!-- QUOTES -->
+  <section class="quotes">
+    <p class="section-tag">Voces que inspiran</p>
+    <div class="quote-wrap">
+      <p class="quote-txt" id="qTxt"></p>
+      <p class="quote-author" id="qAuth"></p>
+    </div>
+    <div class="quote-dots" id="qDots"></div>
+  </section>
+
+  <!-- MARQUEE -->
+  <section class="marquee-section">
+    <p class="section-tag">Mujeres que cambiaron el mundo</p>
+    <div class="track"><div class="track-inner" id="row1"></div></div>
+    <div class="track"><div class="track-inner" id="row2"></div></div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta-icon">♀</div>
+    <h2 class="cta-title">Haz click en cualquier lugar</h2>
+    <p class="cta-body">
+      Cada destello que creas representa una voz,<br>
+      una historia, una mujer que importa.
+    </p>
+    <a href="mujeres.html" class="cta-link">
+      Conoce a 60 mujeres que cambiaron el mundo
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:middle;margin-left:.4rem"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </section>
+
+</div>
+
+<p class="fx-tip">Click para crear luz ✦</p>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════ */
+const QUOTES = [
+  { t: "«No naces mujer: llegas a serlo.»",                                           a: "— Simone de Beauvoir" },
+  { t: "«Una mujer tiene que tener dinero y una habitación propia si va a escribir.»", a: "— Virginia Woolf" },
+  { t: "«No soy libre mientras alguna mujer no lo sea, aunque sus cadenas sean muy diferentes a las mías.»", a: "— Audre Lorde" },
+  { t: "«El feminismo es la idea radical de que las mujeres son personas.»",           a: "— Cheris Kramarae" },
+  { t: "«Cada vez que una mujer se defiende, sin saber que lo hace, defiende a todas las mujeres.»", a: "— Maya Angelou" },
+  { t: "«Un niño, un maestro, un libro y un lápiz pueden cambiar el mundo.»",          a: "— Malala Yousafzai" },
+  { t: "«Las mujeres deben tratar de hacer las cosas como los hombres las han intentado. Y cuando fallen, su fracaso debe ser solo un reto para otras.»", a: "— Amelia Earhart" },
+];
+
+const ROW1 = ["Marie Curie","Frida Kahlo","Simone de Beauvoir","Rosa Parks","Malala Yousafzai","Virginia Woolf","Ada Lovelace","Amelia Earhart","Rigoberta Menchú","Hannah Arendt","Toni Morrison","Coco Chanel"];
+const ROW2 = ["Eleanor Roosevelt","Valentina Tereshkova","Angela Davis","Emmeline Pankhurst","Wangari Maathai","Indira Gandhi","Sojourner Truth","Sor Juana Inés de la Cruz","Simone Veil","Chimamanda Ngozi Adichie","Ruth Bader Ginsburg","Dolores Huerta"];
+
+/* ═══════════════════════════════════════════════════════
+   CURSOR
+═══════════════════════════════════════════════════════ */
+const cur = document.getElementById('cur');
+const curDot = document.getElementById('cur-dot');
+let mx = 0, my = 0, cx = 0, cy = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  curDot.style.cssText = `left:${mx - 2.5}px;top:${my - 2.5}px`;
+});
+
+(function trackCursor() {
+  cx += (mx - cx) * .14;
+  cy += (my - cy) * .14;
+  cur.style.cssText = `left:${cx - 11}px;top:${cy - 11}px`;
+  requestAnimationFrame(trackCursor);
+})();
+
+/* ═══════════════════════════════════════════════════════
+   CANVASES
+═══════════════════════════════════════════════════════ */
+const bg  = document.getElementById('bg-canvas');
+const bgx = bg.getContext('2d');
+const fx  = document.getElementById('fx-canvas');
+const fxx = fx.getContext('2d');
+
+const resize = () => {
+  bg.width = fx.width = innerWidth;
+  bg.height = fx.height = innerHeight;
+};
+resize();
+window.addEventListener('resize', resize);
+
+class Dot {
+  constructor(scattered) {
+    this.init(scattered);
+  }
+  init(scattered) {
+    this.x = Math.random() * bg.width;
+    this.y = scattered ? Math.random() * bg.height : bg.height + 10;
+    this.r = Math.random() * 2.5 + .5;
+    this.vy = Math.random() * .7 + .25;
+    this.vx = (Math.random() - .5) * .35;
+    this.a = Math.random() * .55 + .1;
+    this.hue = Math.random() * 60 + 265;
+    this.sym = Math.random() < .12;
+  }
+  step() {
+    this.y -= this.vy; this.x += this.vx;
+    if (this.y < -15) this.init(false);
+  }
+  draw() {
+    bgx.save();
+    bgx.globalAlpha = this.a;
+    if (this.sym) {
+      bgx.font = `${this.r * 7}px serif`;
+      bgx.fillStyle = `hsl(${this.hue},75%,65%)`;
+      bgx.fillText('♀', this.x - this.r * 3.5, this.y + this.r * 3.5);
+    } else {
+      bgx.beginPath();
+      bgx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      bgx.fillStyle = `hsl(${this.hue},80%,65%)`;
+      bgx.fill();
+    }
+    bgx.restore();
+  }
+}
+
+class Orb {
+  constructor() { this.reset(true); }
+  reset(scattered) {
+    this.x = Math.random() * bg.width;
+    this.y = scattered ? Math.random() * bg.height : bg.height + 300;
+    this.r = Math.random() * 220 + 100;
+    this.vy = Math.random() * .15 + .06;
+    this.a = Math.random() * .035 + .008;
+    this.hue = Math.random() * 60 + 258;
+  }
+  step() {
+    this.y -= this.vy;
+    if (this.y < -this.r * 2) this.reset(false);
+  }
+  draw() {
+    const g = bgx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+    g.addColorStop(0, `hsla(${this.hue},80%,55%,${this.a})`);
+    g.addColorStop(1, 'transparent');
+    bgx.fillStyle = g;
+    bgx.beginPath();
+    bgx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    bgx.fill();
+  }
+}
+
+const dots = Array.from({length: 110}, (_, i) => new Dot(i < 80));
+const orbs = Array.from({length: 7}, () => new Orb());
+
+(function bgLoop() {
+  const g = bgx.createLinearGradient(0, 0, bg.width, bg.height);
+  g.addColorStop(0, '#0d001a');
+  g.addColorStop(.5, '#1a0033');
+  g.addColorStop(1, '#0d001a');
+  bgx.fillStyle = g;
+  bgx.fillRect(0, 0, bg.width, bg.height);
+  orbs.forEach(o => { o.step(); o.draw(); });
+  dots.forEach(d => { d.step(); d.draw(); });
+  requestAnimationFrame(bgLoop);
+})();
+
+/* ═══════════════════════════════════════════════════════
+   FX CANVAS — click sparks
+═══════════════════════════════════════════════════════ */
+class Spark {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    const a = Math.random() * Math.PI * 2;
+    const s = Math.random() * 6 + 2;
+    this.vx = Math.cos(a) * s;
+    this.vy = Math.sin(a) * s - Math.random() * 3;
+    this.life = 1;
+    this.decay = Math.random() * .03 + .015;
+    this.r = Math.random() * 3 + 1;
+    this.hue = Math.random() * 55 + 270;
+    this.sym = Math.random() < .08;
+  }
+  step() {
+    this.x += this.vx; this.y += this.vy;
+    this.vy += .09; this.vx *= .99;
+    this.life -= this.decay;
+  }
+  draw() {
+    fxx.save();
+    fxx.globalAlpha = Math.max(0, this.life);
+    if (this.sym) {
+      fxx.font = `${this.r * 5}px serif`;
+      fxx.fillStyle = `hsl(${this.hue},90%,72%)`;
+      fxx.fillText('♀', this.x, this.y);
+    } else {
+      fxx.beginPath();
+      fxx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      fxx.fillStyle = `hsl(${this.hue},90%,70%)`;
+      fxx.fill();
+    }
+    fxx.restore();
+  }
+}
+
+class Petal {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    const a = Math.random() * Math.PI * 2;
+    const s = Math.random() * 3.5 + 1;
+    this.vx = Math.cos(a) * s;
+    this.vy = Math.sin(a) * s - Math.random() * 4 - 1.5;
+    this.life = 1;
+    this.decay = Math.random() * .012 + .007;
+    this.sz = Math.random() * 9 + 5;
+    this.rot = Math.random() * Math.PI * 2;
+    this.dRot = (Math.random() - .5) * .1;
+    this.hue = Math.random() * 45 + 270;
+  }
+  step() {
+    this.x += this.vx; this.y += this.vy;
+    this.vy += .04; this.vx *= .98;
+    this.rot += this.dRot;
+    this.life -= this.decay;
+  }
+  draw() {
+    fxx.save();
+    fxx.globalAlpha = Math.max(0, this.life) * .85;
+    fxx.translate(this.x, this.y);
+    fxx.rotate(this.rot);
+    fxx.beginPath();
+    fxx.ellipse(0, -this.sz * .5, this.sz * .3, this.sz * .55, 0, 0, Math.PI * 2);
+    fxx.fillStyle = `hsl(${this.hue},78%,68%)`;
+    fxx.fill();
+    fxx.restore();
+  }
+}
+
+const particles = [];
+
+document.addEventListener('click', e => {
+  for (let i = 0; i < 28; i++) particles.push(new Spark(e.clientX, e.clientY));
+  for (let i = 0; i < 16; i++) particles.push(new Petal(e.clientX, e.clientY));
+});
+
+(function fxLoop() {
+  fxx.clearRect(0, 0, fx.width, fx.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    particles[i].step();
+    particles[i].draw();
+    if (particles[i].life <= 0) particles.splice(i, 1);
+  }
+  requestAnimationFrame(fxLoop);
+})();
+
+/* ═══════════════════════════════════════════════════════
+   QUOTES CAROUSEL
+═══════════════════════════════════════════════════════ */
+const qTxt  = document.getElementById('qTxt');
+const qAuth = document.getElementById('qAuth');
+const qDots = document.getElementById('qDots');
+let qIdx = 0, qTimer;
+
+QUOTES.forEach((_, i) => {
+  const d = document.createElement('button');
+  d.className = 'q-dot' + (i === 0 ? ' on' : '');
+  d.setAttribute('aria-label', `Cita ${i + 1}`);
+  d.addEventListener('click', () => goQuote(i));
+  qDots.appendChild(d);
+});
+
+function goQuote(n) {
+  clearTimeout(qTimer);
+  qTxt.classList.add('fade');
+  qAuth.classList.add('fade');
+  setTimeout(() => {
+    qIdx = n;
+    qTxt.textContent  = QUOTES[qIdx].t;
+    qAuth.textContent = QUOTES[qIdx].a;
+    qTxt.classList.remove('fade');
+    qAuth.classList.remove('fade');
+    document.querySelectorAll('.q-dot').forEach((d, i) => d.classList.toggle('on', i === qIdx));
+  }, 420);
+  qTimer = setTimeout(() => goQuote((n + 1) % QUOTES.length), 6000);
+}
+
+goQuote(0);
+
+/* ═══════════════════════════════════════════════════════
+   MARQUEE ROWS
+═══════════════════════════════════════════════════════ */
+function buildRow(id, names) {
+  const el = document.getElementById(id);
+  // duplicate for seamless loop
+  [names, names].forEach(set => {
+    set.forEach((name, i) => {
+      const span = document.createElement('span');
+      span.className = 'name';
+      span.textContent = name;
+      el.appendChild(span);
+      if (i < set.length - 1) {
+        const sep = document.createElement('span');
+        sep.className = 'name name-sep';
+        sep.textContent = '·';
+        el.appendChild(sep);
+      }
+    });
+    const sep = document.createElement('span');
+    sep.className = 'name name-sep';
+    sep.textContent = '·';
+    el.appendChild(sep);
+  });
+}
+
+buildRow('row1', ROW1);
+buildRow('row2', ROW2);
+
+/* ═══════════════════════════════════════════════════════
+   INTERSECTION OBSERVER — subtle entrance
+═══════════════════════════════════════════════════════ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: .15 });
+
+document.querySelectorAll('.quotes, .marquee-section, .cta').forEach(el => {
+  el.style.cssText = 'opacity:0;transform:translateY(30px);transition:opacity .9s ease,transform .9s ease;';
+  io.observe(el);
+});
+</script>
+</body>
+</html>

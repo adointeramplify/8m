@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>60 Mujeres · 8M</title>
+  <link rel="stylesheet" href="//s1.ppllstatics.com/starfish/1.6.11/starfish-live-blue.css">
+  <style>
+    :root {
+      --deep:      #0d001a;
+      --dark:      #1a0033;
+      --mid:       #4a0080;
+      --accent:    #9b30d0;
+      --bright:    #e040fb;
+      --light:     #f0d9ff;
+      --soft:      #c080ff;
+      --ciencia:   #7b3fff;
+      --arte:      #e040fb;
+      --politica:  #ff4fa0;
+      --literatura:#b44fef;
+      --deporte:   #40c4ff;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--deep);
+      color: #fff;
+      font-family: 'Guardian TextSans Regular', sans-serif;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── HEADER ─────────────────────────────── */
+    .hdr {
+      background: linear-gradient(180deg, #1f003b 0%, #0d001a 100%);
+      border-bottom: 1px solid rgba(155, 48, 208, .2);
+      padding: 1.4rem 2rem 0;
+    }
+
+    .hdr-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.6rem;
+    }
+
+    .hdr-back {
+      display: inline-flex; align-items: center; gap: .45rem;
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: .75rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--accent); transition: color .25s;
+    }
+    .hdr-back:hover { color: var(--bright); }
+
+    .hdr-date {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(155, 48, 208, .5);
+    }
+
+    .hdr-main {
+      text-align: center;
+      padding-bottom: 1.8rem;
+    }
+
+    .hdr-eyebrow {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: .68rem; letter-spacing: .5em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: .9rem;
+      display: flex; align-items: center; justify-content: center; gap: .8rem;
+    }
+    .hdr-eyebrow::before, .hdr-eyebrow::after {
+      content: ''; flex: 1; max-width: 80px; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(155,48,208,.5));
+    }
+    .hdr-eyebrow::after { background: linear-gradient(to left, transparent, rgba(155,48,208,.5)); }
+
+    .hdr-title {
+      font-family: 'Guardian Sans Semibold', sans-serif;
+      font-size: clamp(1.6rem, 4.5vw, 3rem);
+      color: var(--light); line-height: 1.1;
+      margin-bottom: .7rem;
+    }
+
+    .hdr-sub {
+      font-family: 'IBM Plex Serif Italic', serif;
+      font-style: italic;
+      font-size: clamp(.85rem, 1.8vw, 1rem);
+      color: var(--soft);
+    }
+
+    .hdr-rule {
+      margin-top: 1.6rem;
+      display: flex; align-items: center; justify-content: center; gap: .6rem;
+    }
+    .hdr-rule-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(155,48,208,.35), rgba(224,64,251,.5), rgba(155,48,208,.35), transparent);
+    }
+    .hdr-rule-sym { font-size: .9rem; color: var(--bright); opacity: .7; }
+
+    /* ── GRID ────────────────────────────────── */
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 3px;
+      padding: 3px;
+    }
+
+    /* ── CARD ────────────────────────────────── */
+    .card {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--dark);
+    }
+
+    /* staggered entrance */
+    .card {
+      opacity: 0;
+      transform: scale(.96);
+      animation: cardIn .5s ease forwards;
+    }
+
+    @keyframes cardIn {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .card-img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+      transition: transform .5s ease;
+    }
+
+    .card-fallback {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem; color: rgba(255,255,255,.06);
+    }
+    .card-fallback::before {
+      content: ''; position: absolute; inset: 0; opacity: .55;
+    }
+    .cat-ciencia    .card-fallback::before { background: linear-gradient(160deg, #0e0030, #250050); }
+    .cat-arte       .card-fallback::before { background: linear-gradient(160deg, #1e0035, #3a0055); }
+    .cat-politica   .card-fallback::before { background: linear-gradient(160deg, #300020, #550035); }
+    .cat-literatura .card-fallback::before { background: linear-gradient(160deg, #150030, #380050); }
+    .cat-deporte    .card-fallback::before { background: linear-gradient(160deg, #001830, #003050); }
+    .card-fallback span { position: relative; z-index: 1; }
+
+    /* name overlay */
+    .card-name-wrap {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 2rem .9rem .8rem;
+      background: linear-gradient(to top, rgba(13,0,26,.95) 0%, rgba(13,0,26,.6) 60%, transparent 100%);
+      transform: translateY(4px);
+      transition: transform .35s ease, background .35s ease;
+    }
+
+    .card-name {
+      font-family: 'Guardian Sans Semibold', sans-serif;
+      font-size: clamp(.75rem, 1.4vw, .92rem);
+      color: var(--light);
+      line-height: 1.25;
+    }
+
+    .card-role-hint {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: .65rem; letter-spacing: .06em;
+      margin-top: .25rem;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .3s ease .05s, transform .3s ease .05s;
+    }
+    .cat-ciencia    .card-role-hint { color: var(--ciencia); }
+    .cat-arte       .card-role-hint { color: var(--arte); }
+    .cat-politica   .card-role-hint { color: var(--politica); }
+    .cat-literatura .card-role-hint { color: var(--literatura); }
+    .cat-deporte    .card-role-hint { color: var(--deporte); }
+
+    /* hover */
+    .card:hover .card-img { transform: scale(1.06); }
+    .card:hover .card-name-wrap { transform: translateY(0); }
+    .card:hover .card-role-hint { opacity: 1; transform: translateY(0); }
+
+    /* ── MODAL ───────────────────────────────── */
+    #modal-bg {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(13, 0, 26, .85);
+      backdrop-filter: blur(10px);
+      align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    #modal-bg.open { display: flex; }
+
+    .modal {
+      background: linear-gradient(145deg, #1a0033, #0d001a);
+      border: 1px solid rgba(155, 48, 208, .35);
+      border-radius: 16px;
+      max-width: 500px; width: 100%;
+      max-height: 90svh;
+      overflow-y: auto;
+      display: flex; flex-direction: column;
+      animation: modalIn .3s cubic-bezier(.22,.68,0,1.2);
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(.9) translateY(24px); }
+      to   { opacity: 1; transform: scale(1)  translateY(0); }
+    }
+
+    .modal-photo {
+      width: 100%; height: 300px;
+      position: relative; overflow: hidden;
+      background: #0d001a; flex-shrink: 0;
+    }
+    .modal-photo img {
+      width: 100%; height: 100%;
+      object-fit: contain; object-position: center top;
+      display: block; opacity: 0;
+      transition: opacity .5s ease;
+    }
+    .modal-photo img.loaded { opacity: 1; }
+    .modal-photo-fallback {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; color: rgba(255,255,255,.06);
+    }
+    .modal-photo-fallback::before {
+      content: ''; position: absolute; inset: 0;
+    }
+
+    .modal-body {
+      padding: 1.4rem 1.5rem 1.8rem;
+      display: flex; flex-direction: column; gap: .7rem;
+    }
+
+    .modal-name {
+      font-family: 'Guardian Sans Semibold', sans-serif;
+      font-size: 1.5rem; color: var(--light);
+      line-height: 1.15;
+    }
+
+    .modal-meta {
+      display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+    }
+
+    .modal-cat {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: .65rem; letter-spacing: .15em; text-transform: uppercase;
+      padding: .2rem .65rem; border-radius: 20px; border: 1px solid currentColor;
+    }
+
+    .modal-role {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: .82rem; color: var(--soft);
+    }
+
+    .modal-country {
+      font-size: .72rem; color: rgba(192, 128, 255, .5);
+    }
+
+    .modal-quote {
+      font-family: 'IBM Plex Serif Italic', serif;
+      font-style: italic;
+      font-size: 1.05rem; color: var(--light);
+      line-height: 1.7;
+      border-left: 2px solid var(--bright);
+      padding-left: 1rem;
+      margin-top: .3rem;
+    }
+
+    .modal-close {
+      position: absolute; top: .9rem; right: .9rem;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(74, 0, 128, .5);
+      border: 1px solid rgba(155, 48, 208, .4);
+      color: var(--soft);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: .9rem;
+      transition: background .2s;
+    }
+    .modal-close:hover { background: var(--mid); }
+    .modal-wrap { position: relative; }
+
+    /* ── FOOTER ──────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2.5rem 2rem;
+      color: rgba(155, 48, 208, .35);
+      font-size: .7rem; letter-spacing: .3em; text-transform: uppercase;
+      border-top: 1px solid rgba(155, 48, 208, .1);
+      margin-top: 3px;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 600px) {
+      .hdr { padding: 1rem 1rem 0; }
+      .hdr-eyebrow::before, .hdr-eyebrow::after { max-width: 30px; }
+      #grid { grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; }
+    }
+    @media (min-width: 1200px) {
+      #grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-top">
+    <a href="index.html" class="hdr-back">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
+      </svg>
+      8M
+    </a>
+    <span class="hdr-date">8 de marzo · 2026</span>
+  </div>
+  <div class="hdr-main">
+    <p class="hdr-eyebrow">♀ &nbsp; Día Internacional de la Mujer &nbsp; ♀</p>
+    <h1 class="hdr-title">Mujeres que cambiaron el mundo</h1>
+    <p class="hdr-sub">Científicas, artistas, activistas, escritoras, pioneras.</p>
+    <div class="hdr-rule">
+      <span class="hdr-rule-line"></span>
+      <span class="hdr-rule-sym">✦</span>
+      <span class="hdr-rule-line"></span>
+    </div>
+  </div>
+</header>
+
+<div id="grid"></div>
+
+<!-- MODAL -->
+<div id="modal-bg" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-wrap">
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
+      <div class="modal-photo">
+        <div class="modal-photo-fallback" id="modal-fallback"></div>
+        <img id="modal-img" src="" alt="">
+      </div>
+    </div>
+    <div class="modal-body">
+      <h2 class="modal-name"  id="modal-name"></h2>
+      <div class="modal-meta">
+        <span class="modal-cat"     id="modal-cat"></span>
+        <span class="modal-role"    id="modal-role"></span>
+      </div>
+      <p class="modal-country" id="modal-country"></p>
+      <blockquote class="modal-quote" id="modal-quote"></blockquote>
+    </div>
+  </div>
+</div>
+
+<footer>♀ · 8 de marzo · Día Internacional de la Mujer</footer>
+
+<script>
+const W = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${f}?width=400`;
+
+const DATA = [
+  // ── CIENCIA (12) ────────────────────────────
+  { n:"Marie Curie",              c:"Física y química",                          p:"Polonia · Francia",     t:"ciencia",
+    foto: W("Marie_Curie_c._1920s.jpg"),
+    q:"Nada en la vida debe ser temido, solo comprendido. Ahora es momento de comprender más, para temer menos." },
+  { n:"Ada Lovelace",             c:"Matemática · Primera programadora",          p:"Reino Unido",           t:"ciencia",
+    foto: W("Ada_Lovelace_portrait.jpg"),
+    q:"La imaginación es la facultad descubridora de la mente." },
+  { n:"Rosalind Franklin",        c:"Bioquímica · ADN",                           p:"Reino Unido",           t:"ciencia",
+    foto: W("Rosalind_Franklin_(1920-1958).jpg"),
+    q:"La ciencia y la vida cotidiana no pueden ni deben separarse." },
+  { n:"Hedy Lamarr",              c:"Actriz e inventora",                         p:"Austria · EEUU",        t:"ciencia",
+    foto: W("Hedy_Lamarr_Publicity_Photo_for_The_Heavenly_Body_1944.jpg"),
+    q:"Cualquier chica puede ser glamurosa. Todo lo que tienes que hacer es quedarte quieta y parecer estúpida." },
+  { n:"Katherine Johnson",        c:"Matemática de la NASA",                      p:"EEUU",                  t:"ciencia",
+    foto: W("Katherine_Johnson_1983.jpg"),
+    q:"Haz lo mejor que puedas en cada tarea, sin importar cuán pequeña sea." },
+  { n:"Valentina Tereshkova",     c:"Primera mujer en el espacio",                p:"URSS",                  t:"ciencia",
+    foto: W("Valentina_Tereshkova_-_1963.jpg"),
+    q:"Si las mujeres pueden ser conductoras de tractores, ¿por qué no pueden pilotar naves espaciales?" },
+  { n:"Jane Goodall",             c:"Primatóloga y conservacionista",             p:"Reino Unido",           t:"ciencia",
+    foto: W("Jane_Goodall.jpg"),
+    q:"Lo que haces marca la diferencia, y tienes que decidir qué tipo de diferencia quieres hacer." },
+  { n:"Barbara McClintock",       c:"Genética · Premio Nobel",                    p:"EEUU",                  t:"ciencia",
+    foto: W("Barbara_McClintock_(1902-1992)_shown_in_her_laboratory_in_1947.jpg"),
+    q:"Si sabes que estás en el camino correcto, si tienes esa convicción interior, nadie puede desanimarte." },
+  { n:"Florence Nightingale",     c:"Fundadora de la enfermería moderna",         p:"Reino Unido",           t:"ciencia",
+    foto: W("Florence_Nightingale_(H_Hering_NPG_x82368).jpg"),
+    q:"El primer requisito de un hospital es que no debería hacer daño a los enfermos." },
+  { n:"Lise Meitner",             c:"Física nuclear",                             p:"Austria · Suecia",      t:"ciencia",
+    foto: W("Lise_Meitner_(1878-1968),_lecturing_at_Catholic_University,_1946.jpg"),
+    q:"La ciencia hace de las personas lo que son." },
+  { n:"Chien-Shiung Wu",          c:"Física experimental",                        p:"China · EEUU",          t:"ciencia",
+    foto: W("Chien-shiung_Wu_(1912-1997).jpg"),
+    q:"No hay razón alguna por la que las mujeres no puedan ser científicas." },
+  { n:"Cecilia Payne-Gaposchkin", c:"Astrónoma",                                  p:"Reino Unido · EEUU",    t:"ciencia",
+    foto: W("Cecilia_Helena_Payne-Gaposchkin.jpg"),
+    q:"El joven científico debe aprender que la naturaleza siempre tiene razón." },
+
+  // ── ARTE Y CULTURA (12) ─────────────────────
+  { n:"Frida Kahlo",              c:"Pintora",                                    p:"México",                t:"arte",
+    foto: W("Frida_Kahlo,_by_Guillermo_Kahlo.jpg"),
+    q:"Pies, ¿para qué los quiero, si tengo alas para volar?" },
+  { n:"Coco Chanel",              c:"Diseñadora de moda",                         p:"Francia",               t:"arte",
+    foto: W("Coco_Chanel,_1920.jpg"),
+    q:"La moda pasa, el estilo permanece." },
+  { n:"Maria Callas",             c:"Soprano",                                    p:"Grecia · EEUU",         t:"arte",
+    foto: W("Maria_Callas_1957.jpg"),
+    q:"Una voz es muy misteriosa. No es solo algo físico." },
+  { n:"Aretha Franklin",          c:"Cantante · Reina del Soul",                  p:"EEUU",                  t:"arte",
+    foto: W("Aretha_Franklin_1968.jpg"),
+    q:"Sé tu propio artista y confía siempre en lo que estás haciendo." },
+  { n:"Nina Simone",              c:"Cantante, pianista y activista",             p:"EEUU",                  t:"arte",
+    foto: W("Nina_Simone_performing.jpg"),
+    q:"El deber de un artista es reflejar los tiempos." },
+  { n:"Billie Holiday",           c:"Cantante de jazz",                           p:"EEUU",                  t:"arte",
+    foto: W("Billie_Holiday_1947.jpg"),
+    q:"No puedo existir sin la música. No. Sin ella, no soy nada." },
+  { n:"Yoko Ono",                 c:"Artista conceptual",                         p:"Japón · EEUU",          t:"arte",
+    foto: W("Yoko_Ono_2009.jpg"),
+    q:"El sueño que soñamos solos es solo un sueño. El sueño que soñamos juntos es la realidad." },
+  { n:"Violeta Parra",            c:"Folclorista, compositora y artista",          p:"Chile",                 t:"arte",
+    foto: W("Violeta_Parra.jpg"),
+    q:"Gracias a la vida, que me ha dado tanto." },
+  { n:"Pina Bausch",              c:"Coreógrafa",                                 p:"Alemania",              t:"arte",
+    foto: W("Pina_Bausch.jpg"),
+    q:"No me interesa cómo se mueve la gente, sino qué les mueve a moverse." },
+  { n:"Artemisia Gentileschi",    c:"Pintora barroca",                            p:"Italia",                t:"arte",
+    foto: W("Self-portrait_as_the_Allegory_of_Painting_(La_Pittura)_-_Artemisia_Gentileschi.jpg"),
+    q:"Mientras viva, tendré control sobre mi ser." },
+  { n:"Georgia O'Keeffe",         c:"Pintora",                                    p:"EEUU",                  t:"arte",
+    foto: W("Georgia_O%27Keeffe.jpg"),
+    q:"He tenido miedo muchas veces, pero nunca dejé que me impidiera hacer lo que quería." },
+  { n:"Camille Claudel",          c:"Escultora",                                  p:"Francia",               t:"arte",
+    foto: W("Camille_Claudel_(1864-1943).jpg"),
+    q:"Solo las obras de arte que me cuestan la vida entera merecen ser llamadas obras." },
+
+  // ── LITERATURA (12) ─────────────────────────
+  { n:"Virginia Woolf",           c:"Escritora",                                  p:"Reino Unido",           t:"literatura",
+    foto: W("Virginia_Woolf_1927.jpg"),
+    q:"Una mujer tiene que tener dinero y una habitación propia si va a escribir." },
+  { n:"Toni Morrison",            c:"Escritora · Premio Nobel",                   p:"EEUU",                  t:"literatura",
+    foto: W("Toni_Morrison_2008-2.jpg"),
+    q:"Si hay un libro que quieres leer, pero que aún no ha sido escrito, debes ser tú quien lo escriba." },
+  { n:"Maya Angelou",             c:"Poeta y escritora",                          p:"EEUU",                  t:"literatura",
+    foto: W("Maya_Angelou.jpg"),
+    q:"Cada vez que una mujer se defiende, sin saber que lo hace, defiende a todas las mujeres." },
+  { n:"Simone de Beauvoir",       c:"Filósofa y escritora",                       p:"Francia",               t:"literatura",
+    foto: W("Simone_de_Beauvoir2.jpg"),
+    q:"No naces mujer: llegas a serlo." },
+  { n:"Agatha Christie",          c:"Escritora",                                  p:"Reino Unido",           t:"literatura",
+    foto: W("Agatha_Christie.png"),
+    q:"Una muy buena memoria tiene la desventaja de recordar cosas que preferiríamos olvidar." },
+  { n:"Jane Austen",              c:"Escritora",                                  p:"Reino Unido",           t:"literatura",
+    foto: W("CassandraAusten-JaneAusten(c.1810)_hires.jpg"),
+    q:"No hay mayor infelicidad que haber conocido la dicha." },
+  { n:"Sor Juana Inés de la Cruz",c:"Poetisa y escritora",                        p:"México",                t:"literatura",
+    foto: W("Juana_de_Asbaje.jpg"),
+    q:"Hombres necios que acusáis a la mujer sin razón, sin ver que sois la ocasión de lo mismo que culpáis." },
+  { n:"Gabriela Mistral",         c:"Poetisa · Premio Nobel",                     p:"Chile",                 t:"literatura",
+    foto: W("Gabriela_Mistral_Passport_crop.jpg"),
+    q:"Muchas de las cosas que necesitamos pueden esperar. Los niños no pueden." },
+  { n:"Alfonsina Storni",         c:"Poetisa y dramaturga",                       p:"Argentina",             t:"literatura",
+    foto: W("Alfonsina_Storni.jpg"),
+    q:"Soy la que soy y no la que esperaban." },
+  { n:"Chimamanda Ngozi Adichie", c:"Escritora y feminista",                      p:"Nigeria",               t:"literatura",
+    foto: W("Chimamanda_Ngozi_Adichie_2013.jpg"),
+    q:"La cultura no hace a las personas. Las personas hacen la cultura." },
+  { n:"Sylvia Plath",             c:"Poetisa y escritora",                        p:"EEUU",                  t:"literatura",
+    foto: W("Sylvia_Plath.jpg"),
+    q:"Puedo, por tanto seré." },
+  { n:"Hannah Arendt",            c:"Filósofa y escritora",                       p:"Alemania · EEUU",       t:"literatura",
+    foto: W("Hannah_arendt-150x150.jpg"),
+    q:"El peligro de los clichés no es que sean falsos, sino que impiden pensar." },
+
+  // ── POLÍTICA Y ACTIVISMO (16) ───────────────
+  { n:"Rosa Parks",               c:"Activista por los derechos civiles",         p:"EEUU",                  t:"politica",
+    foto: W("Rosa_Parks_1955_bus_arrest.jpg"),
+    q:"La única cansada que estaba era de ceder." },
+  { n:"Malala Yousafzai",         c:"Activista por la educación · Nobel",         p:"Pakistán",              t:"politica",
+    foto: W("Malala_Yousafzai_-_World_Economic_Forum_Annual_Meeting_2013.jpg"),
+    q:"Un niño, un maestro, un libro y un lápiz pueden cambiar el mundo." },
+  { n:"Emmeline Pankhurst",       c:"Sufragista",                                 p:"Reino Unido",           t:"politica",
+    foto: W("Emmeline_Pankhurst_portrait.jpg"),
+    q:"Hechos, no palabras." },
+  { n:"Angela Davis",             c:"Activista y académica",                      p:"EEUU",                  t:"politica",
+    foto: W("Angela_Davis_-_Facing_History.jpg"),
+    q:"No acepto que el mundo haya de ser así para siempre." },
+  { n:"Wangari Maathai",          c:"Ecologista y activista · Nobel",             p:"Kenia",                 t:"politica",
+    foto: W("Wangari_Maathai.jpg"),
+    q:"El medio ambiente es muy democrático; afecta a todos por igual." },
+  { n:"Eleanor Roosevelt",        c:"Diplomática y activista",                    p:"EEUU",                  t:"politica",
+    foto: W("Eleanor_Roosevelt_portrait_1933.jpg"),
+    q:"Nadie puede hacerte sentir inferior sin tu consentimiento." },
+  { n:"Gloria Steinem",           c:"Periodista y activista feminista",           p:"EEUU",                  t:"politica",
+    foto: W("Gloria_Steinem_2011_Shankbone.JPG"),
+    q:"Una mujer sin un hombre es como un pez sin bicicleta." },
+  { n:"Rigoberta Menchú",         c:"Activista indígena · Nobel",                 p:"Guatemala",             t:"politica",
+    foto: W("Rigoberta_Menchú.jpg"),
+    q:"La paz no es solo la ausencia de guerra." },
+  { n:"Sojourner Truth",          c:"Activista abolicionista",                    p:"EEUU",                  t:"politica",
+    foto: W("Sojourner_truth_c1870.jpg"),
+    q:"¿Acaso no soy yo una mujer?" },
+  { n:"Harriet Tubman",           c:"Abolicionista y espía",                      p:"EEUU",                  t:"politica",
+    foto: W("Harriet_Tubman_by_Squyer,_NPG,_c1885.jpg"),
+    q:"Liberé a miles de esclavos. Podría haber liberado a miles más si hubieran sabido que eran esclavos." },
+  { n:"Clara Campoamor",          c:"Política y sufragista española",             p:"España",                t:"politica",
+    foto: W("Clara_Campoamor.jpg"),
+    q:"Yo, señores diputados, me siento ciudadana antes que mujer." },
+  { n:"Dolores Ibárruri",         c:"Política · La Pasionaria",                   p:"España",                t:"politica",
+    foto: W("Dolores_Ibárruri.jpg"),
+    q:"¡No pasarán!" },
+  { n:"Simone Veil",              c:"Política y superviviente del Holocausto",    p:"Francia",               t:"politica",
+    foto: W("Simone_Veil_(2009).jpg"),
+    q:"La vida es un combate que se renueva cada día." },
+  { n:"Indira Gandhi",            c:"Primera ministra",                           p:"India",                 t:"politica",
+    foto: W("Indira_Gandhi_official_portrait.jpg"),
+    q:"No puedes sacudir el mundo sin que el mundo te sacuda a ti." },
+  { n:"Ruth Bader Ginsburg",      c:"Jueza del Tribunal Supremo",                 p:"EEUU",                  t:"politica",
+    foto: W("Ruth_Bader_Ginsburg_2016_portrait.jpg"),
+    q:"Las mujeres pertenecen a todos los lugares donde se toman decisiones." },
+  { n:"Benazir Bhutto",           c:"Primera ministra",                           p:"Pakistán",              t:"politica",
+    foto: W("Benazir_Bhutto_1998.jpg"),
+    q:"Nadie puede quitarnos el derecho a la educación." },
+
+  // ── DEPORTE Y OTRAS (8) ─────────────────────
+  { n:"Serena Williams",          c:"Tenista",                                    p:"EEUU",                  t:"deporte",
+    foto: W("Serena_Williams_2013_US_Open.jpg"),
+    q:"Nunca dejaré que nadie me diga que no puedo hacer algo." },
+  { n:"Simone Biles",             c:"Gimnasta olímpica",                          p:"EEUU",                  t:"deporte",
+    foto: W("Simone_Biles_2016_Olympics.jpg"),
+    q:"Ser una sobreviviente no me hace menos atleta." },
+  { n:"Amelia Earhart",           c:"Aviadora pionera",                           p:"EEUU",                  t:"deporte",
+    foto: W("Amelia_Earhart_1935.jpg"),
+    q:"El valor es el precio que la vida cobra por la paz." },
+  { n:"Anne Frank",               c:"Diarista · Símbolo de resistencia",          p:"Países Bajos",          t:"literatura",
+    foto: W("Anne_Frank_passport_photo,_May_1942.jpg"),
+    q:"A pesar de todo, creo que la gente es buena en el fondo." },
+  { n:"Audre Lorde",              c:"Poetisa y activista",                        p:"EEUU",                  t:"literatura",
+    foto: W("Audre_Lorde.jpg"),
+    q:"No soy libre mientras alguna mujer no lo sea, aunque sus cadenas sean muy diferentes a las mías." },
+  { n:"Jacinda Ardern",           c:"Primera ministra",                           p:"Nueva Zelanda",         t:"politica",
+    foto: W("Jacinda_Ardern_cropped.jpg"),
+    q:"Puedes ser empática y gobernar. Son cualidades que deberían ser la norma, no la excepción." },
+  { n:"Michelle Obama",           c:"Abogada y exprimera dama",                   p:"EEUU",                  t:"politica",
+    foto: W("Michelle_Obama_2013_official_portrait.jpg"),
+    q:"Cuando van bajo, nosotros vamos alto." },
+  { n:"Greta Thunberg",           c:"Activista climática",                        p:"Suecia",                t:"politica",
+    foto: W("Greta_Thunberg_2020.jpg"),
+    q:"Quiero que actúen como si nuestra casa estuviera en llamas. Porque lo está." },
+];
+
+/* ══════════════════════════════════════════
+   CAT CONFIG
+══════════════════════════════════════════ */
+const CAT_LABEL = { ciencia:"Ciencia", arte:"Arte y Cultura", politica:"Política", literatura:"Literatura", deporte:"Deporte" };
+const CAT_COLOR = { ciencia:"var(--ciencia)", arte:"var(--arte)", politica:"var(--politica)", literatura:"var(--literatura)", deporte:"var(--deporte)" };
+
+/* ══════════════════════════════════════════
+   RENDER GRID — staggered animation
+══════════════════════════════════════════ */
+const grid = document.getElementById('grid');
+
+DATA.forEach((m, i) => {
+  const card = document.createElement('article');
+  card.className = `card cat-${m.t}`;
+  card.style.animationDelay = `${i * 30}ms`;
+
+  card.innerHTML = `
+    <div class="card-fallback"><span>♀</span></div>
+    ${m.foto ? `<img class="card-img" src="${m.foto}" alt="${m.n}" loading="lazy" onload="this.classList.add('loaded')">` : ''}
+    <div class="card-name-wrap">
+      <p class="card-name">${m.n}</p>
+      <p class="card-role-hint">${m.c}</p>
+    </div>`;
+
+  card.addEventListener('click', () => openModal(m));
+  grid.appendChild(card);
+});
+
+/* ══════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════ */
+const modalBg   = document.getElementById('modal-bg');
+const modalImg  = document.getElementById('modal-img');
+const modalFall = document.getElementById('modal-fallback');
+
+function openModal(m) {
+  document.getElementById('modal-name').textContent    = m.n;
+  document.getElementById('modal-role').textContent    = m.c;
+  document.getElementById('modal-country').textContent = m.p;
+  document.getElementById('modal-quote').textContent   = m.q;
+
+  const catEl = document.getElementById('modal-cat');
+  catEl.textContent  = CAT_LABEL[m.t] || m.t;
+  catEl.style.color  = CAT_COLOR[m.t] || 'var(--accent)';
+
+  modalFall.textContent = '♀';
+  modalImg.classList.remove('loaded');
+
+  if (m.foto) {
+    modalImg.src = m.foto;
+    modalImg.onload = () => modalImg.classList.add('loaded');
+  } else {
+    modalImg.src = '';
+  }
+
+  modalBg.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modalBg.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+modalBg.addEventListener('click', e => { if (e.target === modalBg) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
