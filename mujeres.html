@@ -117,6 +117,7 @@
     .filters {
       position: sticky; top: 0; z-index: 90;
       background: rgba(13, 0, 26, .88);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(155, 48, 208, .15);
       padding: .8rem 2rem;
@@ -213,9 +214,13 @@
     .card-photo {
       position: relative;
       width: 100%;
+      padding-top: 100%; /* fallback para navegadores sin aspect-ratio */
       aspect-ratio: 1 / 1;
       overflow: hidden;
       background: var(--dark);
+    }
+    @supports (aspect-ratio: 1/1) {
+      .card-photo { padding-top: 0; }
     }
 
     .card-fallback {
@@ -306,6 +311,7 @@
       display: none;
       position: fixed; inset: 0; z-index: 200;
       background: rgba(13, 0, 26, .88);
+      -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
       align-items: center; justify-content: center;
       padding: 1.5rem;
@@ -317,6 +323,7 @@
       border: 1px solid rgba(155, 48, 208, .4);
       border-radius: 16px;
       max-width: 560px; width: 100%;
+      max-height: 90vh;
       max-height: 90svh;
       overflow-y: auto;
       display: flex; flex-direction: column;

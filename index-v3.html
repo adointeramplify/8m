@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>8M · Día Internacional de la Mujer</title>
+  <link rel="stylesheet" href="//s1.ppllstatics.com/starfish/1.6.11/starfish-live-blue.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --mid:    #4a0080;
+      --accent: #9b30d0;
+      --bright: #e040fb;
+      --light:  #f0d9ff;
+      --soft:   #c080ff;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #0d001a;
+      display: flex; flex-direction: column;
+      position: relative; z-index: 1;
+    }
+
+    /* ── HERO ──────────────────────────────── */
+    .hero {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 1.5rem 2rem .5rem;
+      position: relative;
+    }
+
+    .eyebrow {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: clamp(.6rem, 1vw, .78rem);
+      letter-spacing: .55em; text-transform: uppercase;
+      color: rgba(155,48,208,.75);
+      margin-bottom: clamp(.6rem, 1.5vh, 1.2rem);
+      opacity: 0;
+      animation: fadeUp .8s ease .3s forwards;
+    }
+
+    .title-8m {
+      font-family: 'Guardian Sans Semibold', sans-serif;
+      font-size: clamp(7rem, 22vw, 18rem);
+      line-height: .88;
+      color: rgba(224, 64, 251, .45); /* fallback: color visible si no hay text-stroke */
+      -webkit-text-stroke: 1.5px rgba(224, 64, 251, .45);
+      animation: fadeUp .9s ease .5s both;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    @supports (-webkit-text-stroke: 1px #000) {
+      .title-8m { color: transparent; }
+    }
+
+    .subtitle {
+      font-family: 'IBM Plex Serif Italic', serif;
+      font-style: italic;
+      font-size: clamp(.85rem, 2.2vw, 1.5rem);
+      color: rgba(240,217,255,.8);
+      margin-top: clamp(.5rem, 1.2vh, 1rem);
+      opacity: 0;
+      animation: fadeUp .8s ease 1s forwards;
+    }
+
+    .rule {
+      display: flex; align-items: center; gap: .5rem;
+      margin-top: clamp(.6rem, 1.5vh, 1.2rem);
+      opacity: 0;
+      animation: fadeUp .8s ease 1.2s forwards;
+    }
+    .rule-line {
+      width: 50px; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(224,64,251,.5));
+    }
+    .rule-line:last-child { background: linear-gradient(to left, transparent, rgba(224,64,251,.5)); }
+    .rule-sym { font-size: .7rem; color: rgba(224,64,251,.6); }
+
+    /* ── TIRAS ─────────────────────────────── */
+    .strips {
+      flex-shrink: 0;
+      display: flex; flex-direction: column;
+      gap: 3px;
+      padding: 3px 0;
+      opacity: 0;
+      animation: fadeIn .8s ease 1.6s forwards;
+    }
+
+    .strip {
+      height: clamp(80px, 13vh, 130px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* fade lateral */
+    .strip::before, .strip::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2;
+      pointer-events: none;
+    }
+    .strip::before { left: 0;  background: linear-gradient(to right, #0d001a, transparent); }
+    .strip::after  { right: 0; background: linear-gradient(to left,  #0d001a, transparent); }
+
+    .strip-inner {
+      display: flex; gap: 3px;
+      width: max-content;
+      height: 100%;
+    }
+
+    .strip-inner { will-change: transform; }
+    .strip:hover { cursor: grab; }
+    .strip:active { cursor: grabbing; }
+
+    .strip-photo {
+      height: 100%;
+      min-width: 75px; /* fallback si aspect-ratio no está soportado */
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #1a0033;
+      position: relative;
+    }
+
+    .strip-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+      filter: grayscale(40%) brightness(.85);
+      transition: filter .4s ease;
+    }
+    .strip-photo:hover img {
+      filter: grayscale(0%) brightness(1.05);
+    }
+
+    /* fallback ♀ */
+    .strip-photo::before {
+      content: '♀';
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      color: rgba(255,255,255,.06);
+      background: linear-gradient(160deg, #0e0030, #250050);
+    }
+
+    /* ── CONTINUAR ─────────────────────────── */
+    .continuar {
+      flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      padding: .8rem 0 1.4rem;
+      text-decoration: none; color: inherit;
+      opacity: 0;
+      animation: fadeUp .8s ease 2s forwards;
+    }
+    .continuar span {
+      font-family: 'Guardian TextSans Medium', sans-serif;
+      font-size: .65rem; letter-spacing: .4em; text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 0 12px rgba(224,64,251,.9), 0 0 24px rgba(224,64,251,.5);
+    }
+    .continuar-line {
+      width: 1px; height: 36px;
+      background: linear-gradient(to bottom, rgba(224,64,251,.9), transparent);
+      box-shadow: 0 0 6px rgba(224,64,251,.5);
+      animation: linePulse 2s ease infinite;
+    }
+
+    /* ── Canvases ──────────────────────────── */
+    #bg {
+      position: fixed; inset: 0; z-index: 0;
+    }
+    #fx {
+      position: fixed; inset: 0; z-index: 999;
+      pointer-events: none;
+    }
+
+    /* ── Keyframes ─────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes linePulse {
+      0%,100% { opacity: .5; } 50% { opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .title-8m { font-size: 5.5rem; }
+      .strip { height: clamp(70px, 11vh, 100px); }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<canvas id="fx"></canvas>
+
+<!-- HERO -->
+<div class="hero">
+  <p class="eyebrow">8 de marzo · 2026</p>
+  <h1 class="title-8m">8M</h1>
+  <p class="subtitle">Día Internacional de la Mujer</p>
+  <div class="rule">
+    <span class="rule-line"></span>
+    <span class="rule-sym">♀</span>
+    <span class="rule-line"></span>
+  </div>
+</div>
+
+<!-- TIRAS -->
+<div class="strips">
+  <div class="strip"><div class="strip-inner" id="s1"></div></div>
+  <div class="strip"><div class="strip-inner" id="s2"></div></div>
+</div>
+
+<!-- CONTINUAR -->
+<a href="mujeres-v2.html" class="continuar">
+  <span>Continuar</span>
+  <div class="continuar-line"></div>
+</a>
+
+<script>
+const W = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${f}?width=300`;
+
+const FOTOS = [
+  W("Marie_Curie_c._1920s.jpg"),
+  W("Frida_Kahlo,_by_Guillermo_Kahlo.jpg"),
+  W("Rosa_Parks_1955_bus_arrest.jpg"),
+  W("Virginia_Woolf_1927.jpg"),
+  W("Malala_Yousafzai_-_World_Economic_Forum_Annual_Meeting_2013.jpg"),
+  W("Hedy_Lamarr_Publicity_Photo_for_The_Heavenly_Body_1944.jpg"),
+  W("Aretha_Franklin_1968.jpg"),
+  W("Simone_de_Beauvoir2.jpg"),
+  W("Eleanor_Roosevelt_portrait_1933.jpg"),
+  W("Maria_Callas_1957.jpg"),
+  W("Katherine_Johnson_1983.jpg"),
+  W("Emmeline_Pankhurst_portrait.jpg"),
+  W("Maya_Angelou.jpg"),
+  W("Coco_Chanel,_1920.jpg"),
+  W("Juana_de_Asbaje.jpg"),
+  W("Angela_Davis_-_Facing_History.jpg"),
+  W("Anne_Frank_passport_photo,_May_1942.jpg"),
+  W("Nina_Simone_performing.jpg"),
+  W("Ruth_Bader_Ginsburg_2016_portrait.jpg"),
+  W("Gabriela_Mistral_Passport_crop.jpg"),
+  W("Harriet_Tubman_by_Squyer,_NPG,_c1885.jpg"),
+  W("Michelle_Obama_2013_official_portrait.jpg"),
+  W("Clara_Campoamor.jpg"),
+  W("Chimamanda_Ngozi_Adichie_2013.jpg"),
+];
+
+/* ── TIRAS — control de velocidad ─────────── */
+const STRIPS = [
+  { id: 's1', baseSpeed:  .9, dir: -1 }, // → izquierda
+  { id: 's2', baseSpeed: .7,  dir:  1 }, // → derecha
+];
+
+STRIPS.forEach(s => {
+  s.el       = null; // se asigna tras buildStrip
+  s.x        = 0;
+  s.curSpeed = s.baseSpeed;
+  s.tgtSpeed = s.baseSpeed;
+  s.half     = null; // calculado lazy
+});
+
+function stripLoop() {
+  STRIPS.forEach(s => {
+    if (!s.el) return;
+
+    // calcula half width una sola vez
+    if (!s.half && s.el.scrollWidth > 0) {
+      s.half = s.el.scrollWidth / 2;
+      // strip 2 empieza en la mitad para que scrolle hacia la derecha correctamente
+      if (s.dir === 1) s.x = -s.half;
+    }
+    if (!s.half) return;
+
+    // lerp suave hacia la velocidad objetivo
+    s.curSpeed += (s.tgtSpeed - s.curSpeed) * .06;
+
+    s.x += s.curSpeed * s.dir;
+
+    // loop infinito
+    if (s.dir === -1 && s.x <= -s.half) s.x += s.half;
+    if (s.dir ===  1 && s.x >= 0)       s.x -= s.half;
+
+    s.el.style.transform = `translateX(${s.x}px)`;
+  });
+  requestAnimationFrame(stripLoop);
+}
+requestAnimationFrame(stripLoop);
+
+// eventos de ratón
+function bindStrip(stripObj, wrapper) {
+  wrapper.addEventListener('mouseenter', () => { stripObj.tgtSpeed = stripObj.baseSpeed * .15; });
+  wrapper.addEventListener('mouseleave', () => { stripObj.tgtSpeed = stripObj.baseSpeed; });
+  wrapper.addEventListener('mousedown',  () => { stripObj.tgtSpeed = 0; });
+  wrapper.addEventListener('mouseup',    () => { stripObj.tgtSpeed = stripObj.baseSpeed * .15; });
+  // touch
+  wrapper.addEventListener('touchstart', () => { stripObj.tgtSpeed = 0; }, { passive: true });
+  wrapper.addEventListener('touchend',   () => { stripObj.tgtSpeed = stripObj.baseSpeed; });
+}
+
+function buildStrip(id, fotos) {
+  const el = document.getElementById(id);
+  // duplicar para loop sin corte
+  [...fotos, ...fotos].forEach(src => {
+    const wrap = document.createElement('div');
+    wrap.className = 'strip-photo';
+    const img = document.createElement('img');
+    img.src = src; img.alt = ''; img.loading = 'lazy';
+    wrap.appendChild(img);
+    el.appendChild(wrap);
+  });
+}
+
+buildStrip('s1', FOTOS);
+buildStrip('s2', [...FOTOS].reverse());
+
+// asignar elementos y eventos
+STRIPS.forEach((s, i) => {
+  s.el = document.getElementById(s.id);
+  bindStrip(s, s.el.closest('.strip'));
+});
+
+/* ── BG — partículas flotantes ────────────── */
+const bg  = document.getElementById('bg');
+const bgx = bg.getContext('2d');
+
+const resizeBg = () => { bg.width = innerWidth; bg.height = innerHeight; };
+resizeBg();
+window.addEventListener('resize', resizeBg);
+
+class Dot {
+  constructor(s) { this.init(s); }
+  init(s) {
+    this.x   = Math.random() * bg.width;
+    this.y   = s ? Math.random() * bg.height : bg.height + 10;
+    this.r   = Math.random() * 2.5 + .5;
+    this.vy  = Math.random() * .7 + .25;
+    this.vx  = (Math.random() - .5) * .35;
+    this.a   = Math.random() * .55 + .1;
+    this.hue = Math.random() * 60 + 265;
+    this.sym = Math.random() < .12;
+  }
+  step() { this.y -= this.vy; this.x += this.vx; if (this.y < -15) this.init(false); }
+  draw() {
+    bgx.save(); bgx.globalAlpha = this.a;
+    if (this.sym) {
+      bgx.font = `${this.r * 7}px serif`;
+      bgx.fillStyle = `hsl(${this.hue},75%,65%)`;
+      bgx.fillText('♀', this.x - this.r * 3.5, this.y + this.r * 3.5);
+    } else {
+      bgx.beginPath(); bgx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      bgx.fillStyle = `hsl(${this.hue},80%,65%)`; bgx.fill();
+    }
+    bgx.restore();
+  }
+}
+
+class Orb {
+  constructor() { this.reset(true); }
+  reset(s) {
+    this.x   = Math.random() * bg.width;
+    this.y   = s ? Math.random() * bg.height : bg.height + 300;
+    this.r   = Math.random() * 220 + 100;
+    this.vy  = Math.random() * .15 + .06;
+    this.a   = Math.random() * .035 + .008;
+    this.hue = Math.random() * 60 + 258;
+  }
+  step() { this.y -= this.vy; if (this.y < -this.r * 2) this.reset(false); }
+  draw() {
+    const g = bgx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+    g.addColorStop(0, `hsla(${this.hue},80%,55%,${this.a})`);
+    g.addColorStop(1, 'transparent');
+    bgx.fillStyle = g; bgx.beginPath();
+    bgx.arc(this.x, this.y, this.r, 0, Math.PI * 2); bgx.fill();
+  }
+}
+
+const dots = Array.from({length: 110}, (_, i) => new Dot(i < 80));
+const orbs = Array.from({length: 7},   () => new Orb());
+
+(function bgLoop() {
+  const g = bgx.createLinearGradient(0, 0, bg.width, bg.height);
+  g.addColorStop(0,  '#0d001a');
+  g.addColorStop(.5, '#1a0033');
+  g.addColorStop(1,  '#0d001a');
+  bgx.fillStyle = g;
+  bgx.fillRect(0, 0, bg.width, bg.height);
+  orbs.forEach(o => { o.step(); o.draw(); });
+  dots.forEach(d => { d.step(); d.draw(); });
+  requestAnimationFrame(bgLoop);
+})();
+
+/* ── FX — destellos al click ──────────────── */
+const fx  = document.getElementById('fx');
+const fxx = fx.getContext('2d');
+const resizeFx = () => { fx.width = innerWidth; fx.height = innerHeight; };
+resizeFx();
+window.addEventListener('resize', resizeFx);
+
+class Spark {
+  constructor(x, y) {
+    const a = Math.random() * Math.PI * 2, s = Math.random() * 6 + 2;
+    this.x = x; this.y = y;
+    this.vx = Math.cos(a) * s; this.vy = Math.sin(a) * s - Math.random() * 3;
+    this.life = 1; this.decay = Math.random() * .03 + .015;
+    this.r = Math.random() * 3 + 1; this.hue = Math.random() * 55 + 270;
+    this.sym = Math.random() < .08;
+  }
+  step() { this.x += this.vx; this.y += this.vy; this.vy += .09; this.vx *= .99; this.life -= this.decay; }
+  draw() {
+    fxx.save(); fxx.globalAlpha = Math.max(0, this.life);
+    if (this.sym) {
+      fxx.font = `${this.r * 5}px serif`;
+      fxx.fillStyle = `hsl(${this.hue},90%,72%)`;
+      fxx.fillText('♀', this.x, this.y);
+    } else {
+      fxx.beginPath(); fxx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      fxx.fillStyle = `hsl(${this.hue},90%,70%)`; fxx.fill();
+    }
+    fxx.restore();
+  }
+}
+
+class Petal {
+  constructor(x, y) {
+    const a = Math.random() * Math.PI * 2, s = Math.random() * 3.5 + 1;
+    this.x = x; this.y = y;
+    this.vx = Math.cos(a) * s; this.vy = Math.sin(a) * s - Math.random() * 4 - 1.5;
+    this.life = 1; this.decay = Math.random() * .012 + .007;
+    this.sz = Math.random() * 9 + 5; this.rot = Math.random() * Math.PI * 2;
+    this.dRot = (Math.random() - .5) * .1; this.hue = Math.random() * 45 + 270;
+  }
+  step() { this.x += this.vx; this.y += this.vy; this.vy += .04; this.vx *= .98; this.rot += this.dRot; this.life -= this.decay; }
+  draw() {
+    fxx.save(); fxx.globalAlpha = Math.max(0, this.life) * .85;
+    fxx.translate(this.x, this.y); fxx.rotate(this.rot);
+    fxx.beginPath(); fxx.ellipse(0, -this.sz * .5, this.sz * .3, this.sz * .55, 0, 0, Math.PI * 2);
+    fxx.fillStyle = `hsl(${this.hue},78%,68%)`; fxx.fill();
+    fxx.restore();
+  }
+}
+
+const particles = [];
+document.addEventListener('click', e => {
+  for (let i = 0; i < 28; i++) particles.push(new Spark(e.clientX, e.clientY));
+  for (let i = 0; i < 16; i++) particles.push(new Petal(e.clientX, e.clientY));
+});
+
+(function fxLoop() {
+  fxx.clearRect(0, 0, fx.width, fx.height);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    particles[i].step(); particles[i].draw();
+    if (particles[i].life <= 0) particles.splice(i, 1);
+  }
+  requestAnimationFrame(fxLoop);
+})();
+</script>
+</body>
+</html>
